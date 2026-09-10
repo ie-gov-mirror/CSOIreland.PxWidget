@@ -168,11 +168,15 @@ pxWidget.ajax.jsonrpc.request = function (pAPI_URL, pAPI_Method, pAPI_Params, ca
   // Override to force aSync ajax even during Sync simulation
   pAJAX_Params.async = true;
 
-  //look for an msal token in a cookie for possible authentication 
-  var msalToken = pxWidget.Cookies.get(pxWidget.constant.msalAccessToken);
-  if (msalToken) {
-    pAJAX_Params.headers["MSAL"] = `Bearer ${msalToken}`;
+  //only send the token if the method is one of two api methods that require authentication for widgets
+  if (pAPI_Method == "PxStat.Data.Cube_API.ReadPreDataset" || pAPI_Method == "PxStat.Data.Cube_API.ReadPreMetadata") {
+    //look for an msal token in a cookie for possible authentication 
+    var msalToken = pxWidget.Cookies.get(pxWidget.constant.msalAccessToken);
+    if (msalToken) {
+      pAJAX_Params.headers["MSAL"] = `Bearer ${msalToken}`;
+    };
   };
+
   // Set the Call ID
   var callID = callID || Math.floor(Math.random() * 999999999) + 1;
 
