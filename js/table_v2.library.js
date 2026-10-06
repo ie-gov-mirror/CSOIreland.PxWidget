@@ -199,8 +199,13 @@ pxWidget.table_v2.pivotData = function (data, id) {
         pivotMap.get(rowKey).set(columnKey, value);
     }
 
-    // Sort column values for grouping
-    var sortedColumnValues = Array.from(columnValues).sort();
+
+    // Convert Set to Array and sort numerically so "10" comes after "9" instead of after "1"
+    //we gave the column values custom variables codes earlier to maintain the order of the classification in the pivot table. 
+    //We must ensure these codes are used for sorting so that the order of the classification is maintained in the pivot table
+    var sortedColumnValues = Array.from(columnValues).sort((a, b) =>
+        a.localeCompare(b, undefined, { numeric: true })
+    );
 
     // Create pivoted data array
     var pivotedData = [
@@ -471,7 +476,7 @@ pxWidget.table_v2.renderPivotedTableCsv = function (pivotedResult, id) {
                 }
                 else if (cell[pxWidget.constant.valueField].length) {
                     //column fields
-                    valueField = cell[pxWidget.constant.decimalField] ? pxWidget.formatNumber(cell[pxWidget.constant.valueField], cell[pxWidget.constant.decimalField]) : cell[pxWidget.constant.valueField];
+                    valueField = cell[pxWidget.constant.decimalField] ? pxWidget.formatNumber(cell[pxWidget.constant.valueField], cell[pxWidget.constant.decimalField]) : pxWidget.formatNumber(cell[pxWidget.constant.valueField]);
                 }
                 else {
                     valueField = pxWidget.draw.params[id].defaultContent;
