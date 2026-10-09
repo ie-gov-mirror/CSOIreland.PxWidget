@@ -1199,6 +1199,13 @@ pxWidget.table_v2.callback.readDatasetOnSuccess = function (response, id) {
     if (pxWidget.jQuery.isEmptyObject(response)) {
         pxWidget.draw.error(id, 'pxWidget.table_v2.callback.readDatasetOnSuccess: missing data response');
     } else {
+        if (pxWidget.draw.params[id].customLabel) {//custom labels for variables
+            pxWidget.jQuery.each(pxWidget.draw.params[id].customLabel, function (index, value) {
+                pxWidget.jQuery.each(value.variable, function (i, v) {
+                    response.dimension[value.dimension].category.label[v.code] = v.label;
+                });
+            });
+        };
         pxWidget.draw.params[id].data.api.response = response;
         // Restart the drawing after successful compilation
         pxWidget.table_v2.draw(id);
